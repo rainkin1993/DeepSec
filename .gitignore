@@ -1,0 +1,23 @@
+# Local HTML report output (generated at runtime)
+deepsec-papers/
+deepsec-papers/**
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+
+# Editor / OS
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Local server state from serve_report.py
+*.pid
+.deepsec-paper-server.log
+.deepsec-paper-server.pid
