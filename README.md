@@ -1,6 +1,8 @@
 # DeepSec http://deepsec.chat/
 智能化网络安全论文检索系统,探索 AI 原生：本站 100% 由人工智能自主构建
 
+![DeepSec](assets/deepsec.chat.png)
+
 # SecPaper Skills
 
 面向 [DeepSec](http://deepsec.chat/) 的 **可移植 Agent Skill**。**SecPaper** 通过公开 HTTP API 检索顶会论文，并可选在本机生成仅绑定 `127.0.0.1` 的 HTML 报告预览。兼容任意能加载标准 `SKILL.md` 包的 Agent。
