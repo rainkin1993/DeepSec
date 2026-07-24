@@ -5,7 +5,7 @@
 
 # SecPaper Skills
 
-面向 [DeepSec](http://deepsec.chat/) 的 **可移植 Agent Skill**。**SecPaper** 通过公开 HTTP API 检索顶会论文，并可选在本机生成仅绑定 `127.0.0.1` 的 HTML 报告预览。兼容任意能加载标准 `SKILL.md` 包的 Agent。
+面向 [DeepSec](http://deepsec.chat/) 的 **可移植 Agent Skill**。**SecPaper** 通过公开 HTTP API 检索顶会论文并在对话中总结；HTML 本地报告为可选项（需明确要求）。兼容任意能加载标准 `SKILL.md` 包的 Agent。
 
 ## 一句话安装
 
@@ -17,7 +17,7 @@
 
 ![SecPaper 效果：对话检索 + 本地 HTML 报告](assets/demo.png)
 
-示例指令：`/sec-paper web越权检测论文` —— Agent 英文优先、并发检索，汇总相关论文后生成 DeepSec 风格报告并在本地预览。
+示例指令：`/sec-paper web越权检测论文` —— Agent 英文优先、并发检索，并在对话中汇总相关论文（≤20 篇给详细解读）。
 
 ## 能力
 
@@ -25,8 +25,8 @@
 |------|------|
 | 论文检索 | 关键词 / 作者 / 机构 / 会议·年份·场景·攻击面 |
 | 检索策略 | **英文技术词优先**、多路 **并发** 查询、首轮即申请出网权限 |
-| 对话总结 | 少于 10 篇详细卡片；≥10 篇精简列表 |
-| HTML 报告 | 可选；`scripts/*.py` + 本地 `127.0.0.1` 静态预览 |
+| 对话总结 | ≤20 篇详细卡片；>20 篇精简列表 |
+| HTML 报告 | **默认关闭**；用户明确要求时可用 `scripts/*.py` + `127.0.0.1` 预览 |
 
 ### 依赖说明
 
@@ -46,7 +46,7 @@
 /sec-paper 查找 IDOR / broken access control 相关论文
 ```
 
-只要列表 / 不要报告时可明确说明。
+只要精简列表时可说明；需要 HTML 报告时请明确要求。
 
 ### 公开 API
 

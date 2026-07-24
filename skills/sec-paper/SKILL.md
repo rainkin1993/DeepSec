@@ -1,6 +1,6 @@
 ---
 name: sec-paper
-description: Search cybersecurity academic papers via DeepSec (deepsec.chat) with outbound network on first request, English-first keywords, and concurrent queries for speed; summarize hits and optionally generate a 127.0.0.1 HTML report when Python 2.7+ or 3.x is available. Portable Agent Skill for any SKILL.md-compatible agent. Use when the user asks to find, search, or look up security papers, conference papers (CCS, IEEE S&P, NDSS, USENIX Security), authors, institutions, or topics like fuzzing, TEE, side-channel, malware, 越权 / BAC / IDOR, or when SecPaper / DeepSec paper search is mentioned.
+description: Search cybersecurity academic papers via DeepSec (deepsec.chat) with outbound network on first request, English-first keywords, and concurrent queries for speed; summarize hits in detail when ≤20 papers (compact list when more). HTML report is opt-in only when the user asks. Portable Agent Skill for any SKILL.md-compatible agent. Use when the user asks to find, search, or look up security papers, conference papers (CCS, IEEE S&P, NDSS, USENIX Security), authors, institutions, or topics like fuzzing, TEE, side-channel, malware, 越权 / BAC / IDOR, or when SecPaper / DeepSec paper search is mentioned.
 ---
 
 # SecPaper — 网络安全论文检索
@@ -35,9 +35,9 @@ http://deepsec.chat
 2. **优先提炼英文技术词**作主查询（见「检索策略」）；需要时再并行补中文或近义词。
 3. 需要时先拉元数据：`/api/conferences`、`/api/years`、`/api/application-scenarios`、`/api/attack-surfaces`（可与首轮检索并行）。
 4. **并发**发起多路检索（多关键词 / 多接口），合并去重；结果不足时再换词或增大 `offset` 翻页——不要串行慢试。
-5. **先在对话里给总结**（见「回答格式」：少于 10 篇给详细解读，否则给精简列表）。
-6. **若本机有 Python（2.7+ 或 3.x）**，默认生成 HTML 报告并用 **仅绑定 127.0.0.1** 的本地端口预览（见「HTML 报告」）。
-7. 用户明确说「只要列表 / 不要报告」时可跳过第 6 步。
+5. **先在对话里给总结**（见「回答格式」：本次展示 ≤20 篇给详细解读，>20 篇给精简列表）。
+6. **默认不生成 HTML 报告**。仅当用户明确要求生成报告 / HTML / 本地预览时，才走「HTML 报告」流程。
+7. 用户说「只要列表」等时按精简列表回答即可。
 
 ## 接口
 
@@ -189,9 +189,11 @@ curl -sG "http://deepsec.chat/api/papers/search" \
 - 合并结果时按 `id` 去重，再按相关度/年份整理展示；单次报告仍建议 ≤30 篇。
 - 详情补全（`/api/papers/{id}`）也可对缺失字段的若干篇并行拉取。
 
-## HTML 报告（默认，需本机 Python 2.7+ 或 3.x）
+## HTML 报告（可选，需用户明确要求；需本机 Python 2.7+ 或 3.x）
 
-检索与对话总结**不依赖** Python。仅在生成 HTML 报告 / 本地预览时需要解释器。
+**默认跳过本段。** 检索与对话总结不生成 HTML。仅当用户明确要求（如「生成 HTML 报告」「本地预览」「导出报告」）时才执行。
+
+检索与对话总结**不依赖** Python。仅在按需生成 HTML 报告 / 本地预览时需要解释器。
 
 ### Python 前置检查（必须）
 
@@ -205,7 +207,7 @@ PY="$(command -v python3 || command -v python || command -v python2 || true)"
 - **有可用解释器**：用该解释器继续生成 HTML 并起本地预览（优先 `python3`，否则 `python` / `python2`）。
 - **没有**：不要安装、不要用其他方式硬生成 HTML；只在对话里给文字总结，并简短说明「本机无 Python，已跳过 HTML 报告」。
 
-### 生成步骤（仅当有 Python）
+### 生成步骤（仅当用户要求 HTML 且有 Python）
 
 1. 将论文写成 JSON：
 
@@ -255,7 +257,7 @@ echo "$URL"
 
 先给 1–2 句总览（命中 `total`、筛选条件、本次展示篇数）。
 
-### 本次展示 < 10 篇：详细卡片式文字
+### 本次展示 ≤ 20 篇：详细卡片式文字
 
 对每篇用固定小卡片结构（便于扫读），优先中文结构化字段；缺省再退回英文摘要前 2–3 句：
 
@@ -276,7 +278,7 @@ echo "$URL"
 - 若无结构化中文，用 `chinese_summary` 一段，或英文 `abstract` 压缩为 2–3 句，不要整段粘贴超长摘要。
 - 篇与篇之间空一行；不要做成难扫的大表。
 
-### 本次展示 ≥ 10 篇：精简列表
+### 本次展示 > 20 篇：精简列表
 
 每篇一行要点即可：
 
@@ -289,6 +291,6 @@ echo "$URL"
 
 ### 其他
 
-- **有 Python 时**附上 `http://127.0.0.1:...` 预览链接；否则说明已跳过 HTML。
+- **默认不附 HTML**；仅用户明确要求且本机有 Python 时，才附上 `http://127.0.0.1:...` 预览链接。
 - 不要编造未出现在 API 结果中的论文。
 - 不要向用户展示本 skill 未列出的内部接口，也不要讨论系统实现细节。
